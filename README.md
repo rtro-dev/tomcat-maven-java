@@ -6,6 +6,9 @@
 - [Configuración inicial de la máquina](#configuración-inicial-de-la-máquina)  
 - [OpenJDK](#openjdk)  
 - [Tomcat](#tomcat)  
+- [Administración](#administración)  
+- [Despliegue manual](#despliegue-manual)  
+- [Maven](#maven)  
 
 <br>
 
@@ -116,4 +119,49 @@ Roles:
 Instalación del administrador web y el administrador de Tomcat para incluir interfaces de administración (*Admin GUI*) y gestión (*Manager GUI*):  
 `sudo apt install -y tomcat9-admin`
 
-Acceso a los paneles de administración: *http://localhost:8080/manager/html*
+Acceso a los paneles de administración:
+
+1. *http://localhost:8080/manager/html*
+
+<img src="./imgs/2.png">
+<img src="./imgs/3.png">
+
+<br><br>
+
+2. *http://localhost:8080/host-manager/html*
+
+<img src="./imgs/4.png">
+<img src="./imgs/5.png">
+
+<br><br>
+
+Para permitir el acceso remoto a todos los paneles, se modifica el fichero *context.xml* del directorio */usr/share/tomcat9-admin/host-manager/META-INF/* con el siguiente contenido:
+
+```bash
+<?xml version="1.0" encoding="UTF-8"?>
+<Context antiResourceLocking="false" privileged="true" >
+  <CookieProcessor  className="org.apache.tomcat.util.http.Rfc6265CookieProcessor"
+                    sameSiteCookies="strict" />
+  <Valve  className="org.apache.catalina.valves.RemoteAddrValve"
+          allow="\d+\.\d+\.\d+\.\d+" />
+  <Manager sessionAttributeValueClassNameFilter="java\.lang\.(?:Boolean|Integer|Long|Number|String)|org\.apache\.catalina\.filters\.CsrfPreventionFilter\$LruCache(?:\$1)?|java\.util\.(?:Linked)?HashMap"/>
+</Context>
+```
+
+La línea de *Valve* se encarga de restringir el acceso según la IP del cliente, por lo que en este caso se modifica para que permita el acceso desde todas las direcciones IP.
+
+Recarga de servidor:  
+`sudo systemctl restart tomcat9`
+
+## Despliegue manual
+
+En el *Gestor de Aplicaicones Web* *(http://localhost:8080/manager/html)*, en la sección *Desplegar*, en el apartado *Archivo War a desplegar*, se pulsa sobre *Examinar...* y se selecciona el fichero *tomcat1.war*.
+
+Tras esto, se pulsa en *Desplegar* y la aplicación ya aparecerá listada en la sección *Aplicaciones*.
+
+<img src="./imgs/6.png">
+<img src="./imgs/7.png">
+
+<br><br>
+
+## Maven
