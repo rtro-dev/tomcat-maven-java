@@ -4,7 +4,8 @@
 
 ## Contenidos
 - [Configuración inicial de la máquina](#configuración-inicial-de-la-máquina)  
-        - [](#)  
+- [OpenJDK](#openjdk)  
+- [Tomcat](#tomcat)  
 
 <br>
 
@@ -77,3 +78,42 @@ Jan 20 11:30:56 practica tomcat9[5836]: OpenSSL successfully initialized [OpenSS
 Jan 20 11:30:58 practica tomcat9[5836]: Initializing ProtocolHandler ["http-nio-8080"]
 Jan 20 11:30:58 practica tomcat9[5836]: Server initialization in [2718] milliseconds
 ```
+
+En *http://localhost:8080*:
+
+<img src="./imgs/1.png">
+
+<br>
+
+## Administración
+
+Edición del archivo *tomcat-users.xml* para configurar un usuario *alumno* con acceso completo a funcionalidades administrativas y gestión del servidor Tomcat:  
+`sudo nano /etc/tomcat9/tomcat-users.xml`
+
+Se definen roles específicos y el usuario *alumno*:  
+```bash
+<?xml version="1.0" encoding="UTF-8"?>
+<tomcat-users xmlns="http://tomcat.apache.org/xml"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://tomcat.apache.org/xml tomcat-users.xsd"
+              version="1.0">
+  <role rolename="admin"/>
+  <role rolename="admin-gui"/>
+  <role rolename="manager"/>
+  <role rolename="manager-gui"/>
+  <user username="alumno"
+        password="1234"
+        roles="admin,admin-gui,manager,manager-gui"/>
+</tomcat-users>
+```
+
+Roles:  
+- admin: Permite realizar tareas administrativas.
+- admin-gui: Habilita el acceso a la interfaz gráfica de administración.
+- manager: Da permisos para gestionar aplicaciones.
+- manager-gui: Permite utilizar la interfaz gráfica de gestión de aplicaciones.
+
+Instalación del administrador web y el administrador de Tomcat para incluir interfaces de administración (*Admin GUI*) y gestión (*Manager GUI*):  
+`sudo apt install -y tomcat9-admin`
+
+Acceso a los paneles de administración: *http://localhost:8080/manager/html*
