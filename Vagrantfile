@@ -35,5 +35,16 @@ Vagrant.configure("2") do |config|
       mv /root/test-app/pom1.xml /root/test-app/pom.xml
       mvn tomcat7:deploy
     SHELL
+    p.vm.provision "shell", name: "appgit", inline: <<-SHELL
+      apt install -y git
+      cd
+      git clone https://github.com/cameronmcnz/rock-paper-scissors.git
+      cd rock-paper-scissors
+      git checkout patch-1
+      rm pom.xml
+      cp -v /vagrant/pom2.xml /root/rock-paper-scissors/
+      mv /root/rock-paper-scissors/pom2.xml /root/rock-paper-scissors/pom.xml
+      mvn tomcat7:deploy
+    SHELL
   end # practica
 end # cofig

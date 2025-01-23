@@ -292,6 +292,8 @@ Viendo que todo ha funcionado correctamente, se procede a extraer los archivos n
 
 ### Actualización de Vagrantfile
 
+En este punto se ha actualizado la provisión en Vagrantfile, ya que se ha comprobado que todo ha funcionado correctamente.
+
 ## Tarea
 
 Repetir el despliegue con una aplicación de GitHub.
@@ -324,6 +326,9 @@ Se modifica el fichero pom.xml con el plugin de maven de nuestro servidor:
 </plugin>
 ```
 <img src="./imgs/11.png">
+
+Se extrae el pom.xml para la provisión:  
+`sudo cp /home/vagrant/rock-paper-scissors/pom.xml /vagrant`
 
 Se despliega:  
 `mvn tomcat7:deploy`
