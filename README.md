@@ -293,3 +293,44 @@ Viendo que todo ha funcionado correctamente, se procede a extraer los archivos n
 ### Actualización de Vagrantfile
 
 ## Tarea
+
+Repetir el despliegue con una aplicación de GitHub.
+
+Se instala git:  
+`apt install git`
+
+Se clona el repositorio al directorio personal:  
+`cd`  
+`git clone https://github.com/cameronmcnz/rock-paper-scissors.git`
+
+Se mueve al directorio:  
+`cd rock-paper-scissors`
+
+Se cambia la rama:
+`git checkout patch-1`
+
+Se modifica el fichero pom.xml con el plugin de maven de nuestro servidor:  
+`sudo nano pom.xml`
+```bash
+<plugin>
+  <groupId>org.apache.tomcat.maven</groupId>
+  <artifactId>tomcat7-maven-plugin</artifactId>
+  <version>2.2</version>
+  <configuration>
+    <url>http://localhost:8080/manager/text</url>
+    <server>Tomcat</server>
+    <path>/desplieguegit</path>
+  </configuration>
+</plugin>
+```
+<img src="./imgs/11.png">
+
+Se despliega:  
+`mvn tomcat7:deploy`
+
+<img src="./imgs/12.png">
+
+Se comprueba en *http://localhost:8080/desplieguegit*
+
+<img src="./imgs/13.png">
+<img src="./imgs/14.png">
