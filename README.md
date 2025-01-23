@@ -8,7 +8,9 @@
 - [Tomcat](#tomcat)  
 - [Administración](#administración)  
 - [Despliegue manual](#despliegue-manual)  
-- [Maven](#maven)  
+- [Maven](#maven)
+- [Extracción de archivos](#extracción-de-archivos)
+- [Tarea](#tarea)  
 
 <br>
 
@@ -277,3 +279,17 @@ Una vez desplegada, se puede acceder a la aplicación en:
 `http://localhost:8080/despliegue`
 
 <img src="./imgs/10.png">
+
+<br>
+
+## Extracción de archivos
+
+Viendo que todo ha funcionado correctamente, se procede a extraer los archivos necesarios para crear la provisión de forma completa.
+`sudo cp /etc/tomcat9/tomcat-users.xml /vagrant`
+`sudo cp /usr/share/tomcat9-admin/host-manager/META-INF/context.xml /vagrant`
+`sudo cp /etc/maven/settings.xml /vagrant`
+`sudo cp /home/vagrant/test-app/pom.xml /vagrant`
+
+### Actualización de Vagrantfile
+
+## Tarea
