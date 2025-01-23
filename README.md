@@ -125,6 +125,7 @@ Acceso a los paneles de administración:
 
 <img src="./imgs/2.png">
 <img src="./imgs/3.png">
+<img src="./imgs/3.2.png">
 
 <br><br>
 
@@ -165,3 +166,114 @@ Tras esto, se pulsa en *Desplegar* y la aplicación ya aparecerá listada en la 
 <br><br>
 
 ## Maven
+
+Instalación:  
+`sudo apt-get update && sudo apt-get -y install maven`
+
+Comprovar que se ha instalado correctamente viendo la versión:
+`mvn --v`
+
+### Configuración
+
+En */etc/tomcat9/tomcat-users.xml* añadimos los roles *manager-status, manager-script* y *manager-jmx* y un nuevo usuario *despliegue* (no se utiliza el usuario *alumno* por seguridad):  
+`sudo nano /etc/tomcat9/tomcat-users.xml`
+```bash
+<?xml version="1.0" encoding="UTF-8"?>
+<tomcat-users xmlns="http://tomcat.apache.org/xml"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://tomcat.apache.org/xml tomcat-users.xsd"
+              version="1.0">
+  <role rolename="admin"/>
+  <role rolename="admin-gui"/>
+  <role rolename="manager"/>
+  <role rolename="manager-gui"/>
+  <role rolename="manager-status"/>
+  <role rolename="manager-script"/>
+  <role rolename="manager-jmx"/>
+  <user username="alumno"
+        password="1234"
+        roles="admin,admin-gui,manager,manager-gui"/>
+  <user username="despliegue" password="5678" roles="manager-script"/>
+</tomcat-users>
+```
+
+Tras esto, se edita el archivo */etc/maven/settings.xml*, dentro del bloque *servers* para indicar a Maven un identificador y las credenciales del servidor para desplegar.  
+`sudo nano /etc/maven/settings.xml`
+
+```bash
+<servers>
+  <server>
+    <id>Tomcat</id>
+    <username>despliegue</username>
+    <password>5678</password>
+  </server>
+</servers>
+```
+
+Ahora, se generará una aplicación en el directorio personal:  
+`cd`  
+```bash
+mvn archetype:generate -DgroupId=org.zaidinvergeles \
+                        -DartifactId=test-app \
+                        -DarchetypeArtifactId=maven-archetype-webapp \
+                        -DinteractiveMode=false
+```
+
+<img src="./imgs/8.png">
+
+Desplazamiento al directorio *test-app*, creado por el proceso anterior:  
+`cd test-app`
+
+Modificación del POM del proyecto, en la sección *build* para que se utilice el plugin de Maven en el despliegue:  
+`sudo nano pom.xml`
+
+```bash
+<project  xmlns="http://maven.apache.org/POM/4.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.zaidinvergeles</groupId>
+  <artifactId>test-app</artifactId>
+  <packaging>war</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>test-appt Maven Webapp</name>
+  <url>http://maven.apache.org</url>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <finalName>test-app-deployment</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.tomcat.maven</groupId>
+        <artifactId>tomcat7-maven-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+          <url>http://localhost:8080/manager/text</url>
+          <server>Tomcat</server>
+          <path>/despliegue</path>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+```
+
+De esta forma, *finalName* es el nombre del .jar que se generará, *url* del servidor Tomcat, *server* indica el nombre del servidor y *path* es el nombre que la aplicación utilizará en el path de la URL.
+
+Por último, los comandos utilizados en Maven para desplegar son:  
+`mvn tomcat7:deploy`  
+`mvn tomcat7:redeploy`  
+`mvn tomcat7:undeploy`
+
+<img src="./imgs/9.png">
+
+Una vez desplegada, se puede acceder a la aplicación en:  
+`http://localhost:8080/despliegue`
+
+<img src="./imgs/10.png">
