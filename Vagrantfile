@@ -25,25 +25,26 @@ Vagrant.configure("2") do |config|
       apt-get update && sudo apt-get -y install maven
       cp -v /vagrant/tomcat-users.xml /etc/tomcat9/
       cp -v /vagrant/settings.xml /etc/maven/
-      cd
+      cd /home/vagrant
       mvn archetype:generate -DgroupId=org.zaidinvergeles \
                         -DartifactId=test-app \
                         -DarchetypeArtifactId=maven-archetype-webapp \
                         -DinteractiveMode=false
-      rm /root/test-app/pom.xml
-      cp -v /vagrant/pom1.xml /root/test-app/
-      mv /root/test-app/pom1.xml /root/test-app/pom.xml
+      rm /home/vagrant/test-app/pom.xml
+      cp -v /vagrant/pom1.xml /home/vagrant/test-app/
+      mv /home/vagrant/test-app/pom1.xml /home/vagrant/test-app/pom.xml
+      cd /home/vagrant/test-app
       mvn tomcat7:deploy
     SHELL
     p.vm.provision "shell", name: "appgit", inline: <<-SHELL
       apt install -y git
-      cd
+      cd /home/vagrant
       git clone https://github.com/cameronmcnz/rock-paper-scissors.git
       cd rock-paper-scissors
       git checkout patch-1
       rm pom.xml
-      cp -v /vagrant/pom2.xml /root/rock-paper-scissors/
-      mv /root/rock-paper-scissors/pom2.xml /root/rock-paper-scissors/pom.xml
+      cp -v /vagrant/pom2.xml /home/vagrant/rock-paper-scissors/
+      mv /home/vagrant/rock-paper-scissors/pom2.xml /home/vagrant/rock-paper-scissors/pom.xml
       mvn tomcat7:deploy
     SHELL
   end # practica
